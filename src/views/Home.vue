@@ -108,8 +108,9 @@ TODO:
 🟦🟦🟦⬜⬜⬜⬜⬜  4 letter word
 */
 // @ is an alias to /src
-// import _5words from '@/assets/5LetterWords.js'
-import _8words from '@/assets/8LetterWords.js'
+// import words from '@/assets/5LetterWords.js'
+// import words from '@/assets/8LetterWords.js'
+import words from '@/assets/filtered8LetterWords.js'
 import modal from '@/components/modal.vue'
 var wordLists = {}
 export default {
@@ -146,9 +147,15 @@ export default {
     }
   },
   created: function () {
-    let wordIndex = Math.floor(_8words.words.length*Math.random());
-    this.word = _8words.words[wordIndex]
-    this.shuffled = this.word.split("").sort(() => 0.5 - Math.random());
+    // Get the wordIndex based on the current day
+    let now = new Date();
+    let epochDate = new Date(new Date().getTime() / 1000);
+    let res = Math.abs(now - epochDate) / 1000;
+    let days = Math.floor(res / 86400);
+    let wordIndex = (days - 18997) % words.words.length
+
+    this.word = words.words[wordIndex][0]
+    this.shuffled = words.words[wordIndex][1].split("")
     this.wordLetterCounts = this.countLetters(this.word)
     document.addEventListener("keydown", (event) => {
       let letters = "abcdefghijklmnopqrstuvwxyz"
