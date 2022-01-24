@@ -26,7 +26,7 @@
 
       <!-- shuffled letters / answer-->
       <div class="word-row" v-if="!showAnswer">
-        <div class="word-tile blue-tile flip" :class="{squashed:squashShuffle, unsquashed:!squashShuffle}" v-for="(letter, idx) in shuffled" v-bind:key="idx" :ref="'r0c'+idx">{{letter}}</div>
+        <div class="word-tile blue-tile flip" :class="{squashed:squashShuffle, unsquashed:!squashShuffle, guessedLetter:shuffledGuessedLetters[idx]}" v-for="(letter, idx) in shuffled" v-bind:key="idx" :ref="'r0c'+idx">{{letter}}</div>
       </div>
       <div class="word-row" v-show="showAnswer">
         <div class="word-tile guessGreen flip" :class="{squashed:!unsquashAnswer, unsquashed:unsquashAnswer}" v-for="(letter, idx) in word" v-bind:key="idx" :ref="'r0c'+idx">{{letter}}</div>
@@ -123,6 +123,7 @@ export default {
       wordLetterCounts: {},
       guessLetterCounts: {},
       shuffled: 'shuffled',
+      shuffledGuessedLetters: [], // arr of bools for each char in shuffled if it has been guessed.
       guesses0: '        ',
       guesses1: '        ',
       guesses2: '        ',
@@ -177,7 +178,7 @@ export default {
   methods: {
     countLetters: function (word) {
        // count occurances of each letter for validation
-      return [...word].reduce((a, e) => { a[e] = a[e] ? a[e] + 1 : 1; return a }, {});
+      return [...word].reduce((prev, curr) => { prev[curr] = prev[curr] ? prev[curr] + 1 : 1; return prev }, {});
     },
     handleKeyboardKey: function (event) {
       this.handleLetterGuess(event.target.innerText)
@@ -189,6 +190,7 @@ export default {
           this.guessInput = this.guessInput + letter
           this['guesses'+this.currentGuessWord] = (this.guessInput+ "        ").slice(0,8)
           this.guessLetterCounts = this.countLetters(this.guessInput)
+          this.shuffledGuessedLetters = this.identifyGuessedLetters()
         } else {
           // don't allow letter to be entered.
           this.shake = true
@@ -203,6 +205,7 @@ export default {
         this.guessInput = this.guessInput.slice(0,-1)
         this['guesses'+this.currentGuessWord] = (this.guessInput+ "        ").slice(0,8)
         this.guessLetterCounts = this.countLetters(this.guessInput)
+        this.shuffledGuessedLetters = this.identifyGuessedLetters()
       }
     },
     handleEnter: function () {
@@ -248,6 +251,18 @@ export default {
         this.showMessage = false
         this.messageText = ""
       }, 3000)
+    },
+    identifyGuessedLetters: function (letter, index) {
+      let inputcpy = `${this.guessInput}` // copy of input
+      let lettersToCheck = [...this.shuffled].join("")
+      let shuffledIsGuessed = this.shuffled.map((letter) => {
+        if (inputcpy.includes(letter)) {
+          inputcpy = inputcpy.replace(letter, '')
+          return true
+        }
+        return false
+      })
+      return shuffledIsGuessed
     },
     isBlue: function (wordIndex, letter) {
       return (this[`guesses${wordIndex}Col`] == 'blue' && letter != " ")
@@ -342,6 +357,9 @@ small {
   background-color: #748cc1; /*#294580;*/
   color: #ffffff;
   border: 2px solid rgba(86, 87, 88, 0.1);
+}
+.guessedLetter{
+  background-color: #a6b7db;
 }
 .hiddenTile {
   background-color: rgba(0,0,0,0); /*#294580;*/
