@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home theme" :class="{'light-theme':!darkMode, 'dark-theme':darkMode}">
 
     <div class="board-container" ref="board-container">
       <div>
@@ -142,9 +142,13 @@ export default {
       showAnswer: false,
       squashShuffle: false,
       unsquashAnswer: false,
+      darkMode: false
     }
   },
   created: function () {
+    //
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    this.darkMode = prefersDarkScheme.matches
     // Get the wordIndex based on the current day
     let now = new Date();
     let epochDate = new Date(new Date().getTime() / 1000);
@@ -236,6 +240,7 @@ export default {
           this.currentGuessWord+=1
           this.guessInput = ""
           this.guessLetterCounts = this.countLetters(this.guessInput)
+          this.shuffledGuessedLetters = this.identifyGuessedLetters()
           if (this.currentGuessWord == 3) {
             this.handleShowAnswer()
           }
@@ -292,10 +297,12 @@ export default {
 </script>
 
 <style>
-html {
-  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
-}
+
+/* colors and themes defined in app.vue */
+
+
 h1 {
+  font-size: 1.5em;
   text-align: left;
   padding: 0 6px;
 }
@@ -309,6 +316,7 @@ small {
   max-width: 500px;
   height: 100vh;
   margin: 0 auto;
+  padding: 4px;
   /* border: 4px solid black; */
   flex-direction: column;
   align-items: stretch;
@@ -320,8 +328,8 @@ small {
   top: 150px;
   left: 50%;
   transform: translate(-50%);
-  background-color: #787c7e;
-  color: #ffffff;
+  background-color: var(--gray);
+  color: var(--white);
   font-family: inherit;
   font-weight: bold;
   border-radius: 6px;
@@ -329,45 +337,58 @@ small {
 }
 .word-row {
   width: 100%;
-  height: 62px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   display: flex;
   justify-content: center;
   align-content: stretch;
 }
 .word-tile{
   flex: 1 100%;
-  height: 62px;
-  margin: 6px;
-  border: 2px solid rgb(86, 87, 88);
-  font-size: 32px;
+  height: 42px;
+  margin: 0px 6px;
+  border: 2px solid var(--color-active);
+  font-size: 24px;
   font-weight: 700;
-  line-height: 62px;
+  line-height: 42px;
   text-transform: uppercase;
 }
+/* When the browser is at least 600px and above */
+@media screen and (min-width: 600px) {
+  h1 {
+    font-size: 1.5em;
+  }
+  .word-row {
+    margin-bottom: 12px;
+  }
+  .word-tile{
+    font-size: 32px;
+    height: 62px;
+    line-height: 62px;
+  }
+}
 .blue-tile {
-  background-color: #43609f; /*#294580;*/
-  color: #ffffff;
+  background-color: var(--tile-blue);
+  color: var(--tile-text-color);
   border: None;
 }
 .guessDisabled{
-  border: 2px solid rgba(86, 87, 88, 0.1);
+  border: 2px solid var(--color-disabled);
 }
 .guessGreen {
-  background-color: #6aaa64; /*#294580;*/
-  color: #ffffff;
-  border: 2px solid rgba(86, 87, 88, 0.1);
+  background-color: var(--green);
+  color: var(--tile-text-color);
+  border: 2px solid var(--green);
 }
 .guessBlue {
-  background-color: #748cc1; /*#294580;*/
-  color: #ffffff;
-  border: 2px solid rgba(86, 87, 88, 0.1);
+  background-color: var(--tile-blue-light);
+  color: var(--tile-text-color);
+  border: 2px solid var(--tile-blue-light);
 }
 .guessedLetter{
-  background-color: #a6b7db;
+  background-color: var(--tile-blue-light);
 }
 .hiddenTile {
-  background-color: rgba(0,0,0,0); /*#294580;*/
+  background-color: rgba(0,0,0,0);
   color: rgba(0,0,0,0);
   border: None;
 }
@@ -378,6 +399,7 @@ small {
   width: 100%;
   position: absolute;
   bottom: 0;
+  left:0;
 }
 .keyboard-row{
   width: 100%;
@@ -397,17 +419,17 @@ small {
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
-  background-color: #d3d6da;
-  color: #1a1a1b;
+  background-color: var(--key-bg);
+  color: var(--key-text-color);
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
-  -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+  -webkit-tap-highlight-color: var(--key-active-bg);
 }
 .keyboard-tile:active{
-  background-color: #878a8c;
+  background-color: var(--key-active-bg);
 }
 .half {
     flex: 0.5;
@@ -452,15 +474,15 @@ small {
     transform: translate3d(4px, 0, 0);
   }
   100% {
-    background-color: #ffffff;
+    background-color: var(--color-background);
   }
 }
 @keyframes red {
   0% {
-    background-color: #dd5050;
+    background-color: var(--red);
   }
   100% {
-    background-color: #ffffff;
+    background-color: var(--color-background);
   }
 }
 @keyframes fade {
@@ -471,6 +493,7 @@ small {
       opacity: 0;
   }
 }
+
 
 
 </style>

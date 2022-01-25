@@ -45,11 +45,11 @@ export default {
   top: 50%;
   left:50%;
   transform: translate(-50%, -50%);
-  min-width: 100px;
+  min-width: 250px;
   min-height: 100px;
-  background-color: #fcfcfc;
+  background-color: var(--modal-content-bg);
   border-radius: 4px;
-  border: 1px solid #fafafa;
+  border: 1px solid var(--modal-content-border);
   box-shadow: 0px 5px 21px -4px rgba(0,0,0,0.5);
   padding: 20px;
   text-align: left;
@@ -60,7 +60,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(1,1,1,0.2)
+  background-color: rgba(1,1,1,0.5)
 }
 .close-icon{
   position: absolute;
