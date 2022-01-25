@@ -99,8 +99,6 @@
 <script>
 /*
 TODO:
-- pre-shuffle words so everybody gets the same shuffle
-- pick one word per day
 - generate emoji output
 🟩🟩🟩🟩🟩🟩🟩🟩  If a valid 8 letter word (10 pts)
 🟦🟦🟦🟦🟦⬜⬜⬜  5 letter word
@@ -308,8 +306,8 @@ small {
   box-sizing: border-box;
   position:relative;
   display:flex;
-  width: 500px;
-  height: 675px;
+  max-width: 500px;
+  height: 100vh;
   margin: 0 auto;
   /* border: 4px solid black; */
   flex-direction: column;
