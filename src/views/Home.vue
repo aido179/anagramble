@@ -315,6 +315,7 @@ small {
   display:flex;
   max-width: 500px;
   height: 100vh;
+  height: -webkit-fill-available;
   margin: 0 auto;
   padding: 4px;
   /* border: 4px solid black; */
